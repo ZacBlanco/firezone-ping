@@ -1,4 +1,5 @@
-//! This module is responsible for providing functionality to parsing stdin and
+//! This module is responsible for providing functionality to parse stdin to
+//! the program's internal parameters.
 
 use std::{
     collections::HashMap,
@@ -10,7 +11,7 @@ use crate::pinger::PingParams;
 
 /// parses the input and prints any invalid input lines to stdout.
 ///
-/// Returns a vector of the valid inputs as [ICMPClientData]
+/// Returns a vector of the valid inputs as [PingParams]
 pub fn parse_input() -> Vec<PingParams> {
     let inputs: Vec<PingParams> = stdin()
         .lines()
@@ -19,7 +20,7 @@ pub fn parse_input() -> Vec<PingParams> {
             if idx > 499 {
                 // over 500 lines -- panic and exit
                 // panicking isn't the best option here, but we're doing it here
-                // for simplicity
+                // for simplicity's sake
                 // Another option would be to simply just take() 500 from the
                 // iterator and log that we're not counting anything after the
                 // 500th line
@@ -73,10 +74,7 @@ pub fn parse_input() -> Vec<PingParams> {
 
 /// Checks if there's any duplicate IPs in the parsed data. Panics if there are.
 fn check_duplicate_ips(inp: &Vec<PingParams>) {
-    let map = inp
-        .iter()
-        .map(|x| (x.ip, x))
-        .collect::<HashMap<_, _>>();
+    let map = inp.iter().map(|x| (x.ip, x)).collect::<HashMap<_, _>>();
     if map.len() != inp.len() {
         panic!("Duplicate IPs in input");
     }

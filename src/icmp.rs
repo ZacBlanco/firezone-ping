@@ -126,12 +126,16 @@ mod test {
 
     #[test]
     fn csum() {
-        assert_eq!(IcmpEcho {
-            ty: super::IcmpType::EchoRequest,
-            code: IcmpCode::Zero,
-            id: 12345,
-            seq: 54321,
-        }.checksum(), 62357);
+        assert_eq!(
+            IcmpEcho {
+                ty: super::IcmpType::EchoRequest,
+                code: IcmpCode::Zero,
+                id: 12345,
+                seq: 54321,
+            }
+            .checksum(),
+            62357
+        );
     }
 
     #[test]

@@ -10,3 +10,6 @@ pnet = "0.33"
 tokio = { version = "1.26", features = ["full"]}
 
 
+[[bin]]
+name = "firezone-ping-tokio"
+path = "src/async.rs"

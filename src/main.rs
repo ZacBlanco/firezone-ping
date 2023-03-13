@@ -2,7 +2,11 @@
 //!
 //! The ICMP echo protocol is specified in [RFC 792](https://www.rfc-editor.org/rfc/rfc792)
 
-use std::time::Duration;
+use std::{
+    collections::HashMap,
+    sync::{Arc, RwLock},
+    time::Duration,
+};
 
 use parser::parse_input;
 use pinger::{PingParams, PingResult, Pinger};
@@ -20,6 +24,7 @@ fn main() -> PingResult<()> {
 }
 
 fn ping(hosts: Vec<PingParams>) -> PingResult<()> {
+    let map = Arc::new(RwLock::new(HashMap::new()));
     let buf_size = 4096 * 10; // 40KiB, probably overkill
     let proto = IpNextHeaderProtocol::new(1); // 1 for ICMP
     let (mut tx, mut rx) =
@@ -28,7 +33,9 @@ fn ping(hosts: Vec<PingParams>) -> PingResult<()> {
     let mut iter = ipv4_packet_iter(&mut rx);
 
     for host in hosts {
-        if let Err(e) = Pinger::new(&host, Duration::from_secs(5)).ping(&mut tx, &mut iter) {
+        if let Err(e) =
+            Pinger::new(&host, Duration::from_secs(5), map.clone()).ping(&mut tx, &mut iter)
+        {
             eprintln!("Failed to ping {}: {:?}", host.ip, e);
         }
     }
